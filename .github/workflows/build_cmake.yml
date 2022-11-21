@@ -17,20 +17,14 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
+            name: "Windows Latest Clang", artifact: "Windows.7z",
             os: windows-latest,
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+            cc: "clang", cxx: "clang++"
           }
         - {
-            name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
-            os: windows-latest,
-            cc: "gcc", cxx: "g++"
-          }
-        - {
-            name: "Ubuntu Latest GCC", artifact: "Linux.7z",
+            name: "Ubuntu Latest Clang", artifact: "Linux.7z",
             os: ubuntu-latest,
-            cc: "gcc", cxx: "g++"
+            cc: "clang", cxx: "clang++"
           }
         - {
             name: "macOS Latest Clang", artifact: "macOS.7z",
@@ -40,6 +34,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Add clang path to $PATH env
+      shell: bash
+      if: runner.os == 'Windows'
+      run: echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $GITHUB_ENV
 
     - name: Download Ninja and CMake
       shell: cmake -P {0}
